@@ -61,5 +61,8 @@ class Kernel extends HttpKernel
 
         // Basic auth token checking
         'app.member' => \App\Http\Middleware\ApiAuthentication::class,
+
+        'isAdmin' => \App\Http\Middleware\AdminMiddleware::class,
+        'clearance' => \App\Http\Middleware\ClearanceMiddleware::class,
     ];
 }
