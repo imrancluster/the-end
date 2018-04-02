@@ -23,17 +23,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // User route
-Route::get('/users', 'UserController@index');
+Route::middleware('isAdmin')->get('/users', 'UserController@index');
 Route::post('/users', 'UserController@store');
 Route::get('/users/activation/{token}', 'UserController@activation');
 Route::get('/users/{id}', 'UserController@show');
 
-Route::get('/', 'NoteController@index')->name('home');
-
-Route::resource('users', 'UserController');
+// Route::resource('users', 'UserController');
 
 Route::resource('roles', 'RoleController');
-
 Route::resource('permissions', 'PermissionController');
-
-Route::resource('posts', 'NoteController');
+Route::resource('notes', 'NoteController');

@@ -10,6 +10,7 @@ class PermissionController extends Controller
 {
 
     public function __construct() {
+        // I have remoed the "auth" middleware
         $this->middleware(['isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
     }
 
@@ -20,7 +21,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        return Permission::all();
+        return Permission::paginate(10);
     }
 
     /**
@@ -42,7 +43,7 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required|max:40',
+            'name'=>'required|unique:permissions|max:40',
         ]);
 
         $name = $request['name'];
@@ -104,18 +105,17 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         $permission = Permission::findOrFail($id);
-
         $this->validate($request, [
             'name'=>'required|max:40',
         ]);
+
         $input = $request->all();
         $permission->fill($input)->save();
 
         return response()->json([
-            'data' => [
-                'error' => false,
-                'message' => 'Permission updated.',
-            ],
+            'error' => false,
+            'message' => 'Permission updated.',
+            'data' => $permission,
         ], 200);
     }
 
@@ -132,20 +132,16 @@ class PermissionController extends Controller
         //Make it impossible to delete this specific permission
         if ($permission->name == "Administer roles & permissions") {
             return response()->json([
-                'data' => [
-                    'error' => true,
-                    'message' => 'Cannot delete this Permission.',
-                ],
+                'error' => true,
+                'message' => 'Cannot delete this Permission.',
             ], 200);
         }
 
         $permission->delete();
 
         return response()->json([
-            'data' => [
-                'error' => true,
-                'message' => 'Permission deleted.',
-            ],
+            'error' => false,
+            'message' => 'Permission deleted.',
         ], 200);
     }
 }

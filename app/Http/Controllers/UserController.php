@@ -17,7 +17,7 @@ class UserController extends Controller
     public function __construct()
     {
         //isAdmin middleware lets only users with a //specific permission permission to access these resources
-        $this->middleware(['auth', 'isAdmin']);
+        // $this->middleware(['isAdmin']);
     }
 
     /**
@@ -27,8 +27,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->middleware(['isAdmin']);
 
-         $user = User::paginate(10);
+        $user = User::paginate(10);
 
          return $user;
     }

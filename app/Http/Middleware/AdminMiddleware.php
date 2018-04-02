@@ -31,7 +31,7 @@ class AdminMiddleware
         // logging user
         Auth::onceUsingId($user->id);
 
-        $users = User::all()->count();
+        // $users = User::all()->count();
 
         if (!Auth::user()->hasPermissionTo('Administer roles & permissions')) //If user does //not have this permission
         {
