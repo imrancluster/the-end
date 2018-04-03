@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\User;
 use Closure;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class ClearanceMiddleware
 {
@@ -21,6 +24,7 @@ class ClearanceMiddleware
         }
 
         $user = User::where('api_token', $token)->first();
+
         if (empty($user))
         {
             return response()->json(['errors' => "Unable to authenticate with invalid token."])->setStatusCode(401);
@@ -39,34 +43,38 @@ class ClearanceMiddleware
             return $next($request);
         }
 
-        if ($request->is('notes'))//If user is creating a note
+        // Load User
+        $role = Role::findByName('Member');
+
+        if ($request->is('api/notes'))//If user is creating a note
         {
-            if (!Auth::user()->hasPermissionTo('Create Note'))
+            if (!Auth::user()->hasRole('Member')) {
+                return response()->json(['errors' => "You are not a member."])->setStatusCode(401);
+            }
+
+            if (!$role->hasPermissionTo('Create Note'))
             {
-                abort('401');
+                return response()->json(['errors' => "User has no permission for create note."])->setStatusCode(401);
             }
             else {
                 return $next($request);
             }
         }
 
-        if ($request->is('notes/*')) //If user is editing a post
+
+        if ($request->is('api/notes/*')) //If user is editing a post
         {
-            if (!Auth::user()->hasPermissionTo('Edit Note')) {
-                abort('401');
-            } else {
-                return $next($request);
+            if (!$role->hasPermissionTo('Edit Note')) {
+                return response()->json(['errors' => "User has no permission for Edit Note."])->setStatusCode(401);
             }
         }
 
-        if ($request->isMethod('Delete')) //If user is deleting a post
+
+        if ($request->isMethod('delete')) //If user is deleting a post
         {
-            if (!Auth::user()->hasPermissionTo('Delete Note')) {
-                abort('401');
-            }
-            else
-            {
-                return $next($request);
+
+            if (!$role->hasPermissionTo('Delete Note')) {
+                return response()->json(['errors' => "User has no permission for Delete Note."])->setStatusCode(401);
             }
         }
 

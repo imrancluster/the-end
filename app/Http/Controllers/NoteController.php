@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
+use App\Http\Resources\NoteResource;
 use App\Note;
 use Illuminate\Http\Request;
 
@@ -44,12 +46,34 @@ class NoteController extends Controller
         $this->validate($request, [
             'title'=>'required|max:100',
             'body' =>'required',
+            'file' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $title = $request['title'];
         $body = $request['body'];
 
         $note = Note::create($request->only('title', 'body'));
+
+        if ($request->hasFile('file')) {
+            $filename = time().'.'.$request->file->getClientOriginalExtension();
+            $uri = 'files/'.$filename;
+            $original_name = $request->file->getClientOriginalName();
+            $filemime = $request->file->getMimeType();
+            $filesize = $request->file->getSize();
+
+            $request->file->move(public_path('files'), $filename);
+
+            $fileInserted = File::create(
+                [
+                    'note_id' => $note->id,
+                    'filename' => $original_name,
+                    'uri' => $uri,
+                    'filemime' => $filemime,
+                    'filesize' => $filesize,
+                    'status' => 1,
+                ]
+            );
+        }
 
         return response()->json([
             'data' => [
@@ -68,7 +92,9 @@ class NoteController extends Controller
      */
     public function show($id)
     {
-        return Note::findOrFail($id);
+        $note = Note::with(['files'])->find($id);
+
+        return new NoteResource($note);
     }
 
     /**
@@ -93,19 +119,43 @@ class NoteController extends Controller
     {
         $this->validate($request, [
             'title'=>'required|max:100',
-            'body'=>'required',
+//            'body'=>'required',
+            'file' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $note = Note::findOrFail($id);
         $note->title = $request->input('title');
-        $note->body = $request->input('body');
+        if ($request->input('body')) {
+            $note->body = $request->input('body');
+        }
         $note->save();
+
+        if ($request->hasFile('file')) {
+            $filename = time().'.'.$request->file->getClientOriginalExtension();
+            $uri = 'files/'.$filename;
+            $original_name = $request->file->getClientOriginalName();
+            $filemime = $request->file->getMimeType();
+            $filesize = $request->file->getSize();
+
+            $request->file->move(public_path('files'), $filename);
+
+            $fileInserted = File::create(
+                [
+                    'note_id' => $note->id,
+                    'filename' => $original_name,
+                    'uri' => $uri,
+                    'filemime' => $filemime,
+                    'filesize' => $filesize,
+                    'status' => 1,
+                ]
+            );
+        }
 
         return response()->json([
             'data' => [
                 'error' => false,
                 'message' => 'Note updated',
-                'data' => $note,
+                'data' => new NoteResource($note),
             ],
         ], 200);
     }
@@ -118,8 +168,18 @@ class NoteController extends Controller
      */
     public function destroy($id)
     {
-        $note = Note::findOrFail($id);
-        $note->delete();
+        $note = Note::find($id);
+
+        if ($note) {
+            $note->delete();
+        } else {
+            return response()->json([
+                'data' => [
+                    'error' => true,
+                    'message' => 'Note not found.',
+                ],
+            ], 404);
+        }
 
         return response()->json([
             'data' => [

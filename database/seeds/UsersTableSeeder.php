@@ -45,6 +45,37 @@ class UsersTableSeeder extends Seeder
         $adminUser->assignRole($role); //Assigning role to user
 
 
+        // Member User
+        $memberUser = User::create([
+            'name'     => 'Imran1',
+            'email'    => 'imran1@gmail.com',
+            'password' => bcrypt('imran'),
+            'is_admin' => true,
+            'is_activated' => true
+        ]);
+
+        $role1 = new Role();
+        $role1->name = "Member";
+        $role1->save();
+
+        $permission1 = new Permission();
+        $permission1->name = "Create Note";
+        $permission1->save();
+
+        $role1->givePermissionTo($permission1);
+
+        $permission2 = new Permission();
+        $permission2->name = "Edit Note";
+        $permission2->save();
+        $role1->givePermissionTo($permission2);
+
+        $permission3 = new Permission();
+        $permission3->name = "Delete Note";
+        $permission3->save();
+        $role1->givePermissionTo($permission3);
+
+        $memberUser->assignRole($role1); //Assigning role to user
+
         //factory(User::class, 50)->create();
     }
 }
