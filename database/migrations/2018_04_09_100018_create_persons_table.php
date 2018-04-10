@@ -15,13 +15,15 @@ class CreatePersonsTable extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->default('0');
             $table->string('name');
             $table->string('email')->unique();
-            $table->integer('mobile');
+            $table->string('mobile');
             $table->timestamps();
         });
 
         Schema::create('note_person', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('note_id');
             $table->integer('person_id');
         });

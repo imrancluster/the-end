@@ -6,6 +6,7 @@ use App\File;
 use App\Http\Resources\NoteResource;
 use App\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
@@ -49,10 +50,18 @@ class NoteController extends Controller
             'file' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $title = $request['title'];
-        $body = $request['body'];
+        $user_id = Auth::user()->id;
 
-        $note = Note::create($request->only('title', 'body'));
+        $note = Note::create([
+            'user_id' => $user_id,
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
+
+        // comma separated person IDs
+        if ($request['persons']) {
+            $note->persons()->attach($request['persons']);
+        }
 
         if ($request->hasFile('file')) {
             $filename = time().'.'.$request->file->getClientOriginalExtension();

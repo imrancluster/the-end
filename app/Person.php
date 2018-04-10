@@ -9,6 +9,10 @@ class Person extends Model
     protected $table = 'persons';
 
     protected $fillable = [
-        'name', 'email', 'mobile'
+        'user_id', 'name', 'email', 'mobile'
     ];
+
+    public function notes(){
+        return $this->belongsToMany('App\Note')->withPivot('id');
+    }
 }

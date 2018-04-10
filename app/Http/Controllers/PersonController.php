@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
 use App\Person;
+use Auth;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class PersonController extends Controller
@@ -40,11 +42,24 @@ class PersonController extends Controller
      */
     public function store(PersonRequest $request)
     {
-        $person = Person::create([
-           'name' => $request->name,
-           'email' => $request->email,
-           'mobile' => $request->mobile,
-        ]);
+        $user_id = Auth::user()->id;
+
+        try{
+            $person = Person::create([
+                'user_id' => $user_id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobile' => $request->mobile,
+            ]);
+        } catch (QueryException $ex) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Getting query exception.',
+                'data' => $ex->getMessage(),
+            ], 200);
+        }
+
+
 
         return response()->json([
             'error' => false,
@@ -61,7 +76,20 @@ class PersonController extends Controller
      */
     public function show($id)
     {
-        //
+        $person = Person::find($id);
+
+
+        if (!$person) {
+            return response()->json([
+                'data' => [
+                    'error' => true,
+                    'message' => 'Person not found.',
+                ],
+            ], 404);
+        }
+
+        return $person;
+
     }
 
     /**
@@ -82,9 +110,25 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PersonRequest $request, $id)
     {
-        //
+        $person = Person::findOrFail($id);
+
+        $person->name = $request->input('name');
+        $person->email = $request->input('email');
+
+        if ($request->input('mobile')) {
+            $person->body = $request->input('mobile');
+        }
+        $person->save();
+
+        return response()->json([
+            'data' => [
+                'error' => false,
+                'message' => 'Person updated',
+                'data' => $person,
+            ],
+        ], 200);
     }
 
     /**
@@ -95,6 +139,24 @@ class PersonController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $person = Person::find($id);
+
+        if ($person) {
+            $person->delete();
+        } else {
+            return response()->json([
+                'data' => [
+                    'error' => true,
+                    'message' => 'Person not found.',
+                ],
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => [
+                'error' => false,
+                'message' => 'Person successfully deleted',
+            ],
+        ], 200);
     }
 }
