@@ -25,9 +25,9 @@ class UsersTableSeeder extends Seeder
             'is_activated' => true
         ]);
 
-        // DB::table('users_activations')->insert([
-        //    'user_id' => $adminUser->id, 'token' => str_random(30)
-        // ]);
+         //DB::table('users_activations')->insert([
+         //   'user_id' => $adminUser->id, 'token' => str_random(30)
+         //]);
 
 
 

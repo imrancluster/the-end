@@ -21,7 +21,7 @@ class NoteController extends Controller
      */
     public function index()
     {
-        return Note::orderby('id', 'desc')->paginate(5);
+        return NoteResource::collection(Note::orderby('id', 'desc')->paginate(5));
     }
 
     /**

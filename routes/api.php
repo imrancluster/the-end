@@ -33,3 +33,4 @@ Route::get('/users/{id}', 'UserController@show');
 Route::resource('roles', 'RoleController');
 Route::resource('permissions', 'PermissionController');
 Route::resource('notes', 'NoteController');
+Route::resource('persons', 'PersonController');
