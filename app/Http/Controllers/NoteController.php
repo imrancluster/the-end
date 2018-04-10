@@ -60,6 +60,7 @@ class NoteController extends Controller
 
         // comma separated person IDs
         if ($request['persons']) {
+            // detach for remove relation
             $note->persons()->attach($request['persons']);
         }
 
@@ -138,6 +139,17 @@ class NoteController extends Controller
             $note->body = $request->input('body');
         }
         $note->save();
+
+        // comma separated person IDs
+        if ($request['persons']) {
+            // detach for remove relation
+            $note->persons()->attach($request['persons']);
+        }
+
+        if ($request['detach_persons']) {
+            // detach for remove relation
+            $note->persons()->detach($request['detach_persons']);
+        }
 
         if ($request->hasFile('file')) {
             $filename = time().'.'.$request->file->getClientOriginalExtension();
