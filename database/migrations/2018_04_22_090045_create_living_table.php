@@ -19,6 +19,7 @@ class CreateLivingTable extends Migration
             $table->integer('last_email_sent')->default(time());
             $table->tinyInteger('send_email_after')->default(15);
             $table->integer('last_email_seen')->default(time());
+            $table->string('token')->default(str_random(50));
             $table->timestamps();
         });
     }

@@ -10,6 +10,13 @@
 <body>
 <h1>Total number of registered users is: {{ $count }}</h1>
 
+<p>Hello Mr/Mrs. {{ $living->user->name }},</p>
+<p>
+    This is your boring email. We are just checking your are living in earth :P.
+    Please click on the following button to make sure your are live.
+</p>
+<p><a href="{{ $living->token_url }}">Click Here!</a></p>
+
 <br>
 <br>
 Thanks,

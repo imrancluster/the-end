@@ -10,15 +10,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendMailable extends Mailable
 {
     use Queueable, SerializesModels;
-    public $count;
+    public $living;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($count)
+    public function __construct($living)
     {
-        $this->count = $count;
+        $this->living = $living;
     }
 
     /**

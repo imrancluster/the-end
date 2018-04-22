@@ -50,43 +50,39 @@ class ActiveUsers extends Command
             // TODO: if member open the email and click on the link e.g: /living/[token]
             // If user the token is valid then update send_email_after = 15, last_email_seen = time()
 
-            // TODO: if send_email_after = 15
-            // then check last_email_sent and compare with current time
-            // then send email
-            // update send_email_after = 7
-            // update last_email_sent = time()
-
-            // TODO: if send_email_after = 7
-            // then check last_email_sent and compare with current time
-            // then send email
-            // update send_email_after = 3
-            // update last_email_sent = time()
-
-            // TODO: if send_email_after = 3
-            // then check last_email_sent and compare with current time
-            // then send email
-            // update send_email_after = 1
-            // update last_email_sent = time()
-
-            // TODO: if send_email_after = 1
-            // then check last_email_sent and compare with current time
-            // then send email
-            // update send_email_after = 0
-            // update last_email_sent = time()
-
-            $livings[] = [
+            $data = (object) [
                 'id' => $living->id,
                 'last_email_sent' => $living->last_email_sent,
                 'send_email_after' => $living->send_email_after,
                 'last_email_seen' => $living->last_email_seen,
+                'token_url' => asset('living/' . $living->token),
                 'user' => [
                     'id' => $living->user->id,
                     'name' => $living->user->name,
                     'email' => $living->user->email,
                 ],
             ];
-        }
 
-        // Mail::to('imrancluster@test.com')->send(new SendMailable($totalUsers));
+            $this->checkUserAvailablity($living, $data);
+        }
+    }
+
+    function checkUserAvailablity($living, $data)
+    {
+        $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
+        if ($dayDiff >= $living->send_email_after) {
+
+            // Send email
+            Mail::to($living->user->email)->send(new SendMailable($data));
+
+            // Update column
+            $live = Living::findOrFail($living->id);
+            $live->send_email_after = 7;
+            $live->last_email_sent = time();
+            $live->save();
+
+        } elseif ($living->send_email_after == 0) {
+            // TODO: Final action
+        }
     }
 }
