@@ -50,7 +50,10 @@ class ActiveUsers extends Command
             // TODO: if member open the email and click on the link e.g: /living/[token]
             // If user the token is valid then update send_email_after = 15, last_email_seen = time()
 
-            $data = (object) [
+            // TODO: if send_email_after = 0
+            // Final action after 7 days
+
+            $data = [
                 'id' => $living->id,
                 'last_email_sent' => $living->last_email_sent,
                 'send_email_after' => $living->send_email_after,
@@ -63,13 +66,30 @@ class ActiveUsers extends Command
                 ],
             ];
 
-            $this->checkUserAvailablity($living, $data);
+            switch ($living->send_email_after) {
+                case 15:
+                    $this->checkUserAvailablity($living, $data, 7);
+                    break;
+                case 7:
+                    $this->checkUserAvailablity($living, $data, 3);
+                    break;
+                case 3:
+                    $this->checkUserAvailablity($living, $data, 1);
+                    break;
+                case 1:
+                    $this->checkUserAvailablity($living, $data, 0);
+                    break;
+                case 0:
+                    // TODO: Final action
+                    break;
+            }
         }
     }
 
-    function checkUserAvailablity($living, $data)
+    function checkUserAvailablity($living, $data, $send_email_after)
     {
         $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
+
         if ($dayDiff >= $living->send_email_after) {
 
             // Send email
@@ -77,12 +97,10 @@ class ActiveUsers extends Command
 
             // Update column
             $live = Living::findOrFail($living->id);
-            $live->send_email_after = 7;
+            $live->send_email_after = $send_email_after;
             $live->last_email_sent = time();
+            $live->token = str_random(50);
             $live->save();
-
-        } elseif ($living->send_email_after == 0) {
-            // TODO: Final action
         }
     }
 }

@@ -28,6 +28,6 @@ class SendMailable extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.activeuser');
+        return $this->subject('Hello! Hope, you are doing well.')->view('emails.activeuser');
     }
 }

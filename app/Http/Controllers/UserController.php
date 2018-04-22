@@ -62,6 +62,9 @@ class UserController extends Controller
             ]
         );
 
+        // Create a living row for new user
+        Living::create(['user_id' => $user->id]);
+
         // @TODO: Need basic member role Id
         // $role = 2; // Sa
         // $role_r = Role::where('id', '=', $role)->firstOrFail();

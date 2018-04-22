@@ -79,7 +79,7 @@ class UsersTableSeeder extends Seeder
 
         $memberUser->assignRole($role1); //Assigning role to user
 
-        $factoryUsers = factory(User::class, 10)->create();
+        $factoryUsers = factory(User::class, 3)->create();
         foreach($factoryUsers as $user) {
             Living::create(['user_id' => $user->id]);
             $user->assignRole($role1); //Assigning role to user
