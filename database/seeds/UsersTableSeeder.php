@@ -1,5 +1,6 @@
 <?php
 
+use App\Living;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +55,8 @@ class UsersTableSeeder extends Seeder
             'is_activated' => true
         ]);
 
+        Living::create(['user_id' => $memberUser->id]);
+
         $role1 = new Role();
         $role1->name = "Member";
         $role1->save();
@@ -76,6 +79,10 @@ class UsersTableSeeder extends Seeder
 
         $memberUser->assignRole($role1); //Assigning role to user
 
-        //factory(User::class, 50)->create();
+        $factoryUsers = factory(User::class, 10)->create();
+        foreach($factoryUsers as $user) {
+            Living::create(['user_id' => $user->id]);
+            $user->assignRole($role1); //Assigning role to user
+        }
     }
 }
