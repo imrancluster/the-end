@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Resources\LivingResource;
+use App\Living;
 use App\Mail\SendMailable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -39,8 +41,24 @@ class ActiveUsers extends Command
      */
     public function handle()
     {
-        $totalUsers = \DB::table('users')->count();
+        $allLivings = Living::all();
 
-        Mail::to('imrancluster@test.com')->send(new SendMailable($totalUsers));
+        $livings = [];
+
+        foreach ($allLivings as $living) {
+            $livings[] = [
+                'id' => $living->id,
+                'last_email_sent' => $living->last_email_sent,
+                'send_email_after' => $living->send_email_after,
+                'last_email_seen' => $living->last_email_seen,
+                'user' => [
+                    'id' => $living->user->id,
+                    'name' => $living->user->name,
+                    'emailc' => $living->user->email,
+                ],
+            ];
+        }
+
+        // Mail::to('imrancluster@test.com')->send(new SendMailable($totalUsers));
     }
 }
