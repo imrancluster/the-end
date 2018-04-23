@@ -90,8 +90,7 @@ class ActiveUsers extends Command
     {
         $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
 
-        //if ($dayDiff >= $living->send_email_after) {
-        if (true) {
+        if ($dayDiff >= $living->send_email_after) {
 
             // Send email
             Mail::to($living->user->email)->send(new SendMailable($data));
