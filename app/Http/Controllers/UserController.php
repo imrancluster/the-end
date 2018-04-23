@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Living;
 use App\Mail\Activation;
 use App\User;
 use Illuminate\Http\Request;
@@ -210,6 +211,35 @@ class UserController extends Controller
 
         return response()->json([
             'data' => [
+                'error' => true,
+                'message' => 'Your token is invalid',
+            ],
+        ], 404);
+    }
+
+    public function living($token) {
+
+        $living = DB::table('livings')->where('token', $token)->first();
+
+        if ($living) {
+
+            $live = Living::findOrFail($living->id);
+            $live->send_email_after = 15;
+            $live->last_email_seen = time();
+            $live->token = str_random(50);
+            $live->save();
+
+            return response()->json([
+                'data' => [
+                    'error' => false,
+                    'message' => 'Your information has been updated successfully.',
+                ],
+            ], 200);
+        }
+
+        return response()->json([
+            'data' => [
+                'error' => true,
                 'message' => 'Your token is invalid',
             ],
         ], 404);

@@ -13,4 +13,9 @@
 
 Route::get('/', 'NoteController@index')->name('home');
 
+/**
+ * User
+ */
+Route::get('users/living/{token}', 'UserController@living');
+
 Auth::routes();

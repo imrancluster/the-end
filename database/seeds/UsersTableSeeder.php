@@ -55,7 +55,7 @@ class UsersTableSeeder extends Seeder
             'is_activated' => true
         ]);
 
-        Living::create(['user_id' => $memberUser->id]);
+        Living::create(['user_id' => $memberUser->id, 'token' => str_random(50)]);
 
         $role1 = new Role();
         $role1->name = "Member";
@@ -80,8 +80,9 @@ class UsersTableSeeder extends Seeder
         $memberUser->assignRole($role1); //Assigning role to user
 
         $factoryUsers = factory(User::class, 3)->create();
+
         foreach($factoryUsers as $user) {
-            Living::create(['user_id' => $user->id]);
+            Living::create(['user_id' => $user->id, 'token' => str_random(50)]);
             $user->assignRole($role1); //Assigning role to user
         }
     }

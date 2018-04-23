@@ -58,7 +58,7 @@ class ActiveUsers extends Command
                 'last_email_sent' => $living->last_email_sent,
                 'send_email_after' => $living->send_email_after,
                 'last_email_seen' => $living->last_email_seen,
-                'token_url' => asset('living/' . $living->token),
+                'token_url' => asset('users/living/' . $living->token),
                 'user' => [
                     'id' => $living->user->id,
                     'name' => $living->user->name,
@@ -90,7 +90,8 @@ class ActiveUsers extends Command
     {
         $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
 
-        if ($dayDiff >= $living->send_email_after) {
+        //if ($dayDiff >= $living->send_email_after) {
+        if (true) {
 
             // Send email
             Mail::to($living->user->email)->send(new SendMailable($data));
@@ -99,7 +100,6 @@ class ActiveUsers extends Command
             $live = Living::findOrFail($living->id);
             $live->send_email_after = $send_email_after;
             $live->last_email_sent = time();
-            $live->token = str_random(50);
             $live->save();
         }
     }
