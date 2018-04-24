@@ -18,4 +18,8 @@ Route::get('/', 'NoteController@index')->name('home');
  */
 Route::get('users/living/{token}', 'UserController@living');
 
+Route::get('generate-pdf','HomeController@generatePDF');
+
+
+
 Auth::routes();
