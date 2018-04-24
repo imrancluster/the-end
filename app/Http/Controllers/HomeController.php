@@ -38,9 +38,16 @@ class HomeController extends Controller
     {
         $data = ['title' => 'Welcome to HDTuto.com'];
 
-        $pdf = PDF::loadView('myPDF', $data);
+        // $pdf = PDF::loadView('myPDF', $data)->save(public_path() . '/final-data/final-data.pdf');
+        // Direct download function
+        // return $pdf->download('hdtuto.pdf');
 
-        return $pdf->download('hdtuto.pdf');
+        $pdfCreated = PDF::loadView('myPDF', $data)->save(public_path() . '/files/final-data/final-data.pdf');
+
+        return [
+            'data' => $pdfCreated,
+            'error' => false,
+        ];
 
     }
 }
