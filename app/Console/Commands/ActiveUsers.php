@@ -47,12 +47,6 @@ class ActiveUsers extends Command
 
         foreach ($allLivings as $living) {
 
-            // TODO: if member open the email and click on the link e.g: /living/[token]
-            // If user the token is valid then update send_email_after = 15, last_email_seen = time()
-
-            // TODO: if send_email_after = 0
-            // Final action after 7 days
-
             $data = [
                 'id' => $living->id,
                 'last_email_sent' => $living->last_email_sent,
@@ -81,6 +75,7 @@ class ActiveUsers extends Command
                     break;
                 case 0:
                     // TODO: Final action
+                    $this->sendFinalCommitment($living);
                     break;
             }
         }
@@ -101,5 +96,19 @@ class ActiveUsers extends Command
             $live->last_email_sent = time();
             $live->save();
         }
+    }
+
+    function sendFinalCommitment($living) {
+        // If send_email_after = 0
+        // Final action after 7 days
+        $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
+        if ($dayDiff >= 7) {
+            
+        }
+
+        // Prepare Note for each person
+        // Create PDF file for each Note
+        // Send each Note PDF to the persons
+        // Block user account
     }
 }
