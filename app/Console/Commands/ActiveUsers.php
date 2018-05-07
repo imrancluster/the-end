@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Http\Resources\LivingResource;
 use App\Living;
 use App\Mail\SendMailable;
+use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -105,6 +106,14 @@ class ActiveUsers extends Command
         if ($dayDiff >= 7) {
             
         }
+
+        $user = User::findOrFail($living->user->id);
+
+        foreach ($user->persons as $person) {
+            echo $person->name . ' ' . $person->email . ' <br>';
+        }
+
+        die(' called');
 
         // Prepare Note for each person
         // Create PDF file for each Note
