@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Http\Controllers\HomeController;
 use App\Http\Resources\LivingResource;
 use App\Living;
+use App\Mail\FinalMailable;
 use App\Mail\SendMailable;
 use App\User;
 use Illuminate\Console\Command;
@@ -117,6 +118,7 @@ class ActiveUsers extends Command
             // Create PDF file for each Note
             // Find is there any images
             $data = [
+                'owner' => $user->name,
                 'title' => $note->title,
                 'body' => $note->body,
             ];
@@ -125,15 +127,20 @@ class ActiveUsers extends Command
                 $data['files'][] = asset($file->uri);
             }
 
-            // print_r($data);
-            HomeController::generatePDF(time().'_'.$note->id.'.pdf', $data);
+            // PDF generation if we need
+            // HomeController::generatePDF(time().'_'.$note->id.'.pdf', $data);
 
+            // Send each Note PDF to the persons
             foreach ($note->persons as $person) {
-                // print $person->email . ' ';
+
+                $data['person'] = [
+                    'name' => $person->name,
+                ];
+
+                Mail::to($person->email)->send(new FinalMailable($data));
             }
         }
 
-        // Send each Note PDF to the persons
         // Block user account
     }
 }
