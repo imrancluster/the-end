@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\HomeController;
 use App\Http\Resources\LivingResource;
 use App\Living;
 use App\Mail\SendMailable;
@@ -100,6 +101,7 @@ class ActiveUsers extends Command
     }
 
     function sendFinalCommitment($living) {
+
         // If send_email_after = 0
         // Final action after 7 days
         $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
@@ -114,16 +116,22 @@ class ActiveUsers extends Command
 
             // Create PDF file for each Note
             // Find is there any images
+            $data = [
+                'title' => $note->title,
+                'body' => $note->body,
+            ];
 
+            foreach ($note->files as $file) {
+                $data['files'][] = asset($file->uri);
+            }
+
+            // print_r($data);
+            HomeController::generatePDF(time().'_'.$note->id.'.pdf', $data);
 
             foreach ($note->persons as $person) {
-                print $person->email . ' ';
+                // print $person->email . ' ';
             }
         }
-
-        die(' called');
-
-
 
         // Send each Note PDF to the persons
         // Block user account

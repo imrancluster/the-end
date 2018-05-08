@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hi</title>
+    <title>{{ $title }}</title>
 </head>
 <body>
 
 <h1>{{ $title }}</h1>
 
+{!! $body !!}
 
-
-<p><strong>Bold content</strong></p>
-
-<img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" />
+<div class="images">
+    @isset ($files)
+        <h3>All Images</h3>
+        <hr>
+        @foreach ($files as $file)
+            <img src="{{ $file  }}" alt="">
+        @endforeach
+    @endisset
+</div>
 </body>
 </html>
