@@ -107,16 +107,24 @@ class ActiveUsers extends Command
             
         }
 
+        // Prepare Note for each person
         $user = User::findOrFail($living->user->id);
 
-        foreach ($user->persons as $person) {
-            echo $person->name . ' ' . $person->email . ' <br>';
+        foreach ($user->notes as $note) {
+
+            // Create PDF file for each Note
+            // Find is there any images
+
+
+            foreach ($note->persons as $person) {
+                print $person->email . ' ';
+            }
         }
 
         die(' called');
 
-        // Prepare Note for each person
-        // Create PDF file for each Note
+
+
         // Send each Note PDF to the persons
         // Block user account
     }

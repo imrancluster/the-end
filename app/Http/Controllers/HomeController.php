@@ -33,7 +33,7 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function generatePDF()
+    public static function generatePDF()
 
     {
         $data = ['title' => 'Welcome to HDTuto.com'];
@@ -42,7 +42,7 @@ class HomeController extends Controller
         // Direct download function
         // return $pdf->download('hdtuto.pdf');
 
-        $pdfCreated = PDF::loadView('myPDF', $data)->save(public_path() . '/files/final-data/final-data.pdf');
+        $pdfCreated = PDF::loadView('pdf', $data)->save(public_path() . '/files/final-data/final-data.pdf');
 
         return [
             'data' => $pdfCreated,

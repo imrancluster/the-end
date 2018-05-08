@@ -42,4 +42,8 @@ class User extends Authenticatable
     public function persons() {
         return $this->hasMany(Person::class);
     }
+
+    public function notes() {
+        return $this->hasMany(Note::class);
+    }
 }
