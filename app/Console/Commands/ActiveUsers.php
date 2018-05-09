@@ -107,38 +107,39 @@ class ActiveUsers extends Command
         // Final action after 7 days
         $dayDiff = round((time() - $living->last_email_sent)/(60 * 60 * 24));
         if ($dayDiff >= 7) {
-            
-        }
 
-        // Prepare Note for each person
-        $user = User::findOrFail($living->user->id);
+            // Prepare Note for each person
+            $user = User::findOrFail($living->user->id);
 
-        foreach ($user->notes as $note) {
+            foreach ($user->notes as $note) {
 
-            // Create PDF file for each Note
-            // Find is there any images
-            $data = [
-                'owner' => $user->name,
-                'title' => $note->title,
-                'body' => $note->body,
-            ];
-
-            foreach ($note->files as $file) {
-                $data['files'][] = asset($file->uri);
-            }
-
-            // PDF generation if we need
-            // HomeController::generatePDF(time().'_'.$note->id.'.pdf', $data);
-
-            // Send each Note PDF to the persons
-            foreach ($note->persons as $person) {
-
-                $data['person'] = [
-                    'name' => $person->name,
+                // Create PDF file for each Note
+                // Find is there any images
+                // Plan changed we are sending email not PDF
+                $data = [
+                    'owner' => $user->name,
+                    'title' => $note->title,
+                    'body' => $note->body,
                 ];
 
-                Mail::to($person->email)->send(new FinalMailable($data));
+                foreach ($note->files as $file) {
+                    $data['files'][] = asset($file->uri);
+                }
+
+                // PDF generation if we need
+                // HomeController::generatePDF(time().'_'.$note->id.'.pdf', $data);
+
+                // Send each Note PDF to the persons
+                foreach ($note->persons as $person) {
+
+                    $data['person'] = [
+                        'name' => $person->name,
+                    ];
+
+                    Mail::to($person->email)->send(new FinalMailable($data));
+                }
             }
+            
         }
 
         // Block user account
