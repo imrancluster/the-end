@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Living;
 use App\Mail\Activation;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 
 
 class UserController extends Controller

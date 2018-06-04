@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\File;
 use App\Http\Resources\NoteResource;
 use App\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class NoteController extends Controller
 {
@@ -23,6 +24,7 @@ class NoteController extends Controller
     public function index()
     {
         return NoteResource::collection(Note::orderby('id', 'desc')->paginate(5));
+
     }
 
     /**

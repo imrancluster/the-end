@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/', 'NoteController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
 /**
  * User
  */
-Route::get('users/living/{token}', 'UserController@living');
+Route::get('users/living/{token}', 'Api\UserController@living');
 
 Route::get('generate-pdf','HomeController@generatePDF');
 
