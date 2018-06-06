@@ -1,0 +1,69 @@
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+#app img.bg {
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.navbar-laravel {
+  background-color: transparent;
+
+  .navbar-brand {
+    color: skyblue;
+
+    &:hover {
+      color: skyblue;
+    }
+  }
+
+  .navbar-nav {
+    .nav-link {
+      color: skyblue;
+      padding-bottom: 5px;
+
+      &:hover {
+        border-bottom: 1px solid skyblue;
+        color: skyblue;
+      }
+    }
+  }
+
+}
+
+.card.logic-form {
+  margin-top: 50px;
+  background: transparent;
+  border: 1px solid skyblue;
+
+  .card-header {
+    border-bottom: 1px solid skyblue;
+    color: skyblue;
+  }
+  .card-body {
+    color: skyblue;
+
+    input {
+      min-width: 190px;
+      background: transparent;
+      color: #fff;
+    }
+
+    .login-btn {
+      background-color: skyblue;
+      border: 1px solid skyblue;
+    }
+
+    .forgot-password-link {
+      color: skyblue;
+      padding: 10px 0;
+    }
+  }
+}
